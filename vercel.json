@@ -5,15 +5,19 @@
   "framework": "nextjs",
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/next"
+      "src": "app/nba_stats.py",
+      "use": "@vercel/python"
     },
     {
-      "src": "requirements.txt",
-      "use": "@vercel/python"
+      "src": "package.json",
+      "use": "@vercel/next"
     }
   ],
   "routes": [
+    {
+      "src": "/api/stats",
+      "dest": "app/nba_stats.py"
+    },
     {
       "src": "/(.*)",
       "dest": "/$1"
