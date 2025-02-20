@@ -8,13 +8,31 @@ interface StatsCategories {
 
 export async function GET() {
   try {
+    // First, try to install the dependencies if they're not already installed
+    try {
+      await new Promise((resolve, reject) => {
+        exec("pip install -r requirements.txt", (error, stdout, stderr) => {
+          if (error) {
+            console.error("Failed to install dependencies:", error);
+            console.error("stderr:", stderr);
+            reject(error);
+            return;
+          }
+          console.log("Dependencies installed successfully");
+          resolve(stdout);
+        });
+      });
+    } catch (error) {
+      console.error("Error installing dependencies:", error);
+      // Continue anyway as dependencies might already be installed
+    }
+
     const stats = await new Promise<StatsCategories>((resolve, reject) => {
-      // Use absolute path to the Python script
       const scriptPath = path.join(process.cwd(), "app/nba_stats.py");
 
       exec(`python3 "${scriptPath}"`, (error, stdout, stderr) => {
         if (error) {
-          console.error(`Error: ${error}`);
+          console.error(`Error executing Python script: ${error}`);
           console.error(`stderr: ${stderr}`);
           reject(error);
           return;
@@ -55,7 +73,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching stats:", error);
     return NextResponse.json(
-      { error: "Failed to fetch stats" },
+      { error: "Failed to fetch stats. Please try again later." },
       { status: 500 }
     );
   }

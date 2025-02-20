@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "buildCommand": "pip install -r requirements.txt && next build",
   "installCommand": "npm install",
   "framework": "nextjs",
@@ -6,6 +7,16 @@
     {
       "src": "package.json",
       "use": "@vercel/next"
+    },
+    {
+      "src": "requirements.txt",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
