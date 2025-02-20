@@ -1,0 +1,11 @@
+{
+  "buildCommand": "pip install -r requirements.txt && next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ]
+}
