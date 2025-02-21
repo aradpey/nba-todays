@@ -6,7 +6,7 @@ export async function GET(): Promise<Response> {
   try {
     console.log("Executing Python stats function...");
 
-    return await new Promise<Response>((resolve, reject) => {
+    return await new Promise<Response>((resolve) => {
       const pythonPath = process.env.VERCEL ? "python3" : "python";
       const pythonProcess = spawn(pythonPath, [
         join(process.cwd(), "api", "python", "stats.py"),
