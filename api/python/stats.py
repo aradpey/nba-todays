@@ -15,7 +15,9 @@ import time
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],  # Ensure logs go to stdout for Vercel
+    handlers=[
+        logging.StreamHandler(sys.stderr)
+    ],  # Send logs to stderr instead of stdout
 )
 logger = logging.getLogger(__name__)
 
@@ -26,10 +28,10 @@ def log_error(error_msg, error=None):
         logger.error(f"{error_msg}: {str(error)}\nTraceback: {traceback.format_exc()}")
     else:
         logger.error(error_msg)
-    # Also print to stdout for Vercel logs
-    print(f"ERROR: {error_msg}", file=sys.stdout)
+    # Print errors to stderr
+    print(f"ERROR: {error_msg}", file=sys.stderr)
     if error:
-        print(f"Exception: {str(error)}\n{traceback.format_exc()}", file=sys.stdout)
+        print(f"Exception: {str(error)}\n{traceback.format_exc()}", file=sys.stderr)
 
 
 def get_player_image_url(player_id):
@@ -357,6 +359,9 @@ def get_todays_stats():
 if __name__ == "__main__":
     try:
         result = get_todays_stats()
-        print(json.dumps(result))
+        # Ensure only the JSON output goes to stdout
+        print(json.dumps(result), file=sys.stdout)
+        sys.stdout.flush()
     except Exception as e:
-        print(json.dumps({"error": str(e)}))
+        print(json.dumps({"error": str(e)}), file=sys.stdout)
+        sys.stdout.flush()

@@ -38,10 +38,17 @@ export async function GET() {
         }
 
         try {
-          const data = JSON.parse(dataString);
+          // Find the last valid JSON object in the output
+          const jsonMatch = dataString.match(/\{[\s\S]*\}/);
+          if (!jsonMatch) {
+            throw new Error("No valid JSON found in output");
+          }
+          const jsonStr = jsonMatch[0];
+          const data = JSON.parse(jsonStr);
           resolve(NextResponse.json(data));
         } catch (error) {
           console.error("Error parsing Python output:", error);
+          console.error("Raw output:", dataString);
           resolve(
             NextResponse.json(
               { error: "Failed to parse stats data" },
