@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
   "builds": [
     {
       "src": "api/python/stats.py",
@@ -7,7 +9,7 @@
       "config": {
         "runtime": "python3.9",
         "maxLambdaSize": "15mb",
-        "installCommand": "pip install --target ${LAMBDA_TASK_ROOT} -r requirements.txt"
+        "installCommand": "pip install -r api/python/requirements.txt"
       }
     },
     {
