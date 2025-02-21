@@ -2,7 +2,7 @@
 
 A real-time NBA statistics dashboard built with Next.js, showcasing today's top performers across multiple statistical categories.
 
-![Screenshot 2025-02-20 at 4 23 28 AM](https://github.com/user-attachments/assets/fe410d8f-4180-4931-ad92-2ff7cc01cbfb)
+![Screenshot 2025-02-20 at 4 23 28 AM](https://github.com/user-attachments/assets/fe410d8f-4180-4931-ad92-2ff7cc01cbfb)
 
 ## Features
 
@@ -52,17 +52,6 @@ pip install -r requirements.txt
 npm install
 ```
 
-4. Connect to GitHub (if setting up from scratch):
-
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/aradpey/nba-todays-leaders.git
-git push -u origin main
-```
-
 ## Running the Application
 
 1. Start the development server:
@@ -82,7 +71,7 @@ http://localhost:3000
 ```
 basket/
 ├── app/                  # Next.js app directory
-├── api/                  # Serverless API functions
+├── api/                  # API functions
 ├── components/          # React components
 ├── public/             # Static assets
 └── styles/            # Global styles
@@ -92,7 +81,7 @@ basket/
 
 - `LeaderboardDashboard`: Main dashboard component
 - `IntroAnimation`: Loading and intro animations
-- `api/stats.py`: NBA API integration and serverless function
+- `api/stats.py`: NBA API integration
 
 ## Data Refresh
 
@@ -110,25 +99,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Vital Information Needed
-
-Before committing, please ensure you have:
-
-1. NBA API access (no authentication required)
-2. Python 3.x installed with pip
-3. Node.js v18 or higher
-4. Sufficient system memory (recommended: 4GB or more)
-5. A modern web browser for optimal viewing
-
 ## Known Limitations
 
 - The NBA API may have rate limiting
 - Statistics are only available for active game days
 - Some player images may not be available
-
-## Support
-
-For support, please open an issue in the repository.
 
 ## Support
 

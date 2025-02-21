@@ -17,12 +17,12 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,  # Required for wildcard origins
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Configure logging with more details
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -37,7 +37,6 @@ def log_error(error_msg, error=None):
         logger.error(f"{error_msg}: {str(error)}\nTraceback: {traceback.format_exc()}")
     else:
         logger.error(error_msg)
-    # Print errors to stderr
     print(f"ERROR: {error_msg}", file=sys.stderr)
     if error:
         print(f"Exception: {str(error)}\n{traceback.format_exc()}", file=sys.stderr)
@@ -53,9 +52,7 @@ def parse_iso_duration(duration):
         return 0.0
 
     try:
-        # Remove PT and S
         duration = duration.replace("PT", "").replace("S", "")
-        # Split into minutes and seconds
         parts = duration.split("M")
         minutes = float(parts[0])
         seconds = float(parts[1]) if len(parts) > 1 else 0
@@ -70,9 +67,7 @@ def format_iso_duration(duration):
         return "0:00"
 
     try:
-        # Remove PT and S
         duration = duration.replace("PT", "").replace("S", "")
-        # Split into minutes and seconds
         parts = duration.split("M")
         minutes = int(float(parts[0]))
         seconds = int(float(parts[1])) if len(parts) > 1 else 0
@@ -149,11 +144,9 @@ def get_todays_stats():
             try:
                 logger.info(f"Processing game {game_id} (status: {game['gameStatus']})")
 
-                # Use live boxscore endpoint
                 box = boxscore.BoxScore(game_id)
                 box_data = box.get_dict()
 
-                # Process both home and away team players
                 players_data = []
 
                 # Add home team players
@@ -202,13 +195,11 @@ def get_todays_stats():
                         }
                         players_data.append(player_dict)
 
-                # Convert to DataFrame
                 if players_data:
                     player_stats = pd.DataFrame(players_data)
                     has_valid_stats = True
                     logger.info(f"Found valid stats for game {game_id}")
 
-                    # Add game status
                     game_status = (
                         "Final"
                         if game["gameStatus"] == 3
@@ -216,7 +207,6 @@ def get_todays_stats():
                     )
                     player_stats["GAME_STATUS"] = game_status
 
-                    # Calculate percentages
                     player_stats["FG_PCT"] = pd.Series(
                         np.where(
                             player_stats["FGA"] > 0,
@@ -270,12 +260,10 @@ def get_todays_stats():
                 "message": "Games are currently in progress, but statistics are not yet available. Please check back in a few minutes.",
             }
 
-        # Combine all stats
         logger.info("Combining all player stats")
         combined_stats = pd.concat(all_player_stats)
         logger.info(f"Combined stats shape: {combined_stats.shape}")
 
-        # Format minutes for sorting and display
         combined_stats["MIN_SORT"] = combined_stats["MIN"].apply(parse_iso_duration)
         combined_stats["MIN"] = combined_stats["MIN"].apply(format_iso_duration)
 
@@ -307,7 +295,6 @@ def get_todays_stats():
                         "Free Throw %": "FTA",
                     }[category_name]
                     made_col = attempts_col.replace("A", "M")
-                    # Filter players with minimum attempts
                     valid_players = combined_stats[
                         (combined_stats[attempts_col] >= 3)
                         & (combined_stats["MIN_SORT"] > 0)
@@ -342,7 +329,6 @@ def get_todays_stats():
                     else:
                         value = str(int(player[column]))
 
-                    # Include game status in player info
                     player_info = f"{player['PLAYER_NAME']} ({player['TEAM_ABBREVIATION']}) [{player['GAME_STATUS']}]: {value} ||| {get_player_image_url(player['PLAYER_ID'])}"
                     results[category_name].append(player_info)
                     logger.info(f"Added player info: {player_info}")
@@ -368,7 +354,17 @@ def get_todays_stats():
 if __name__ == "__main__":
     try:
         result = get_todays_stats()
-        # Ensure only the JSON output goes to stdout
+        # Add CORS headers to the response
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+        }
+        # Print headers first
+        for key, value in headers.items():
+            print(f"{key}: {value}", file=sys.stdout)
+        print("\n", file=sys.stdout)  # Empty line after headers
+        # Print JSON response
         print(json.dumps(result), file=sys.stdout)
         sys.stdout.flush()
     except Exception as e:
