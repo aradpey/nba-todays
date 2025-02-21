@@ -9,7 +9,9 @@
       "config": {
         "runtime": "python3.9",
         "maxLambdaSize": "15mb",
-        "installCommand": "pip install -r api/python/requirements.txt"
+        "installCommand": "pip install -r api/python/requirements.txt",
+        "memory": 1024,
+        "maxDuration": 10
       }
     },
     {
@@ -26,11 +28,5 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ],
-  "functions": {
-    "api/python/stats.py": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  }
+  ]
 }
