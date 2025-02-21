@@ -28,5 +28,8 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ]
+  ],
+  "env": {
+    "PYTHONPATH": "/vercel/path0"
+  }
 }
