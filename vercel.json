@@ -1,14 +1,12 @@
 {
   "version": 2,
-  "functions": {
-    "api/python/**/*.py": {
-      "runtime": "python3.12"
-    }
-  },
   "builds": [
     {
       "src": "api/python/stats.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.9"
+      }
     },
     {
       "src": "package.json",
