@@ -1,4 +1,4 @@
-// File: /Users/aradpey/codestuff/dbprok/proj3/basket/app/api/stats/route.ts
+// File: /Users/aradpey/codestuff/dbprok/proj3/nba-todays/app/api/stats/route.ts
 import * as entry from '../../../../../app/api/stats/route.js'
 import type { NextRequest } from 'next/server.js'
 

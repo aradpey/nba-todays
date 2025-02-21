@@ -1,4 +1,4 @@
-// File: /Users/aradpey/codestuff/dbprok/proj3/basket/app/layout.tsx
+// File: /Users/aradpey/codestuff/dbprok/proj3/nba-todays/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
