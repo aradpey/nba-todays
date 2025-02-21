@@ -7,7 +7,7 @@
       "config": {
         "maxLambdaSize": "15mb",
         "runtime": "python3.9",
-        "buildCommand": "pip install -r requirements.txt"
+        "installCommand": "python3.9 -m ensurepip && python3.9 -m pip install --no-cache-dir -r requirements.txt"
       }
     },
     {
@@ -18,7 +18,7 @@
   "routes": [
     {
       "src": "/api/python/stats",
-      "dest": "api/python/stats.py",
+      "dest": "/api/python/stats.py",
       "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "*",
@@ -31,5 +31,8 @@
       "dest": "/$1"
     }
   ],
+  "env": {
+    "PYTHONPATH": "/vercel/path0"
+  },
   "public": true
 }
