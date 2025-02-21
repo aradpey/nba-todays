@@ -82,6 +82,7 @@ http://localhost:3000
 ```
 basket/
 ├── app/                  # Next.js app directory
+├── api/                  # Serverless API functions
 ├── components/          # React components
 ├── public/             # Static assets
 └── styles/            # Global styles
@@ -91,7 +92,7 @@ basket/
 
 - `LeaderboardDashboard`: Main dashboard component
 - `IntroAnimation`: Loading and intro animations
-- `nba_stats.py`: NBA API integration
+- `api/stats.py`: NBA API integration and serverless function
 
 ## Data Refresh
 

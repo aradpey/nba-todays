@@ -1,58 +1,36 @@
-import { exec } from "child_process";
 import { NextResponse } from "next/server";
-import path from "path";
-
-interface StatsCategories {
-  [key: string]: string[];
-}
+import { headers } from "next/headers";
 
 export async function GET() {
   try {
-    const stats = await new Promise<StatsCategories>((resolve, reject) => {
-      const scriptPath = path.join(process.cwd(), "app/nba_stats.py");
+    const headersList = headers();
+    const host = headersList.get("host") || "localhost:3000";
+    const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+    const baseUrl = `${protocol}://${host}`;
 
-      exec(`python3 "${scriptPath}"`, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error executing Python script: ${error}`);
-          console.error(`stderr: ${stderr}`);
-          reject(error);
-          return;
-        }
-
-        try {
-          // Parse the output into a structured format
-          const lines = stdout.split("\n");
-          const categories: StatsCategories = {};
-          let currentCategory = "";
-
-          lines.forEach((line) => {
-            if (line.endsWith("Leaders:")) {
-              currentCategory = line.replace(" Leaders:", "").trim();
-              categories[currentCategory] = [];
-            } else if (line.includes("):")) {
-              const playerData = line.trim();
-              if (currentCategory && playerData) {
-                categories[currentCategory].push(playerData);
-              }
-            }
-          });
-
-          if (Object.keys(categories).length === 0) {
-            reject(new Error("No data parsed from Python script output"));
-            return;
-          }
-
-          resolve(categories);
-        } catch (parseError) {
-          console.error("Error parsing Python output:", parseError);
-          reject(parseError);
-        }
-      });
+    console.log("Fetching stats from Python endpoint...");
+    const response = await fetch(`${baseUrl}/api/python/stats`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
-    return NextResponse.json({ stats });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error from Python endpoint:", errorText);
+      return NextResponse.json(
+        { error: "Failed to fetch stats from Python endpoint" },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    console.log("Received data from Python endpoint:", data);
+
+    return NextResponse.json(data);
   } catch (error) {
-    console.error("Error fetching stats:", error);
+    console.error("Error in API route:", error);
     return NextResponse.json(
       { error: "Failed to fetch stats. Please try again later." },
       { status: 500 }

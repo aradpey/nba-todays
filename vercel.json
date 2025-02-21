@@ -1,15 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "pip install -r requirements.txt && next build",
-  "installCommand": "npm install",
-  "framework": "nextjs",
+  "functions": {
+    "api/python/**/*.py": {
+      "runtime": "python3.12"
+    }
+  },
   "builds": [
     {
-      "src": "app/nba_stats.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "15mb"
-      }
+      "src": "api/python/stats.py",
+      "use": "@vercel/python"
     },
     {
       "src": "package.json",
@@ -18,12 +17,15 @@
   ],
   "routes": [
     {
-      "src": "/api/stats",
-      "dest": "app/nba_stats.py"
+      "src": "/api/python/stats",
+      "dest": "api/python/stats.py"
     },
     {
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ]
+  ],
+  "env": {
+    "PYTHONPATH": "."
+  }
 }

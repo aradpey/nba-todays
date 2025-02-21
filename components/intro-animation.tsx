@@ -4,9 +4,14 @@ import Image from "next/image";
 interface IntroProps {
   onAnimationComplete: () => void;
   isLoading: boolean;
+  loadingMessage?: string;
 }
 
-export function IntroAnimation({ onAnimationComplete, isLoading }: IntroProps) {
+export function IntroAnimation({
+  onAnimationComplete,
+  isLoading,
+  loadingMessage,
+}: IntroProps) {
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-slate-900"
@@ -32,8 +37,9 @@ export function IntroAnimation({ onAnimationComplete, isLoading }: IntroProps) {
             src="https://cdn.nba.com/logos/leagues/logo-nba.svg"
             alt="NBA Logo Background"
             fill
+            sizes="800px"
+            style={{ objectFit: "contain" }}
             priority
-            className="object-contain"
           />
         </motion.div>
       </div>
@@ -62,16 +68,18 @@ export function IntroAnimation({ onAnimationComplete, isLoading }: IntroProps) {
               src="https://cdn.nba.com/logos/leagues/logo-nba.svg"
               alt="NBA Logo"
               fill
+              sizes="320px"
+              style={{ objectFit: "contain" }}
               priority
-              className="object-contain"
             />
           </motion.div>
 
-          <motion.div
-            className="w-16 h-16 border-4 border-blue-500 rounded-full border-t-transparent"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          />
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin" />
+            <p className="text-slate-300 text-lg">
+              {loadingMessage || "Loading statistics..."}
+            </p>
+          </div>
         </motion.div>
       ) : (
         <>
@@ -99,7 +107,7 @@ export function IntroAnimation({ onAnimationComplete, isLoading }: IntroProps) {
           />
 
           {/* Clear NBA Logo */}
-          <div className="z-30 flex flex-col items-center">
+          <div className="z-30 flex flex-col items-center justify-center">
             <motion.div
               className="relative w-96 h-96"
               initial={{ opacity: 0, scale: 0.5 }}
@@ -110,8 +118,9 @@ export function IntroAnimation({ onAnimationComplete, isLoading }: IntroProps) {
                 src="https://cdn.nba.com/logos/leagues/logo-nba.svg"
                 alt="NBA Logo"
                 fill
+                sizes="384px"
+                style={{ objectFit: "contain" }}
                 priority
-                className="object-contain"
               />
             </motion.div>
           </div>

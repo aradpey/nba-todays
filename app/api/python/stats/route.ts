@@ -1,0 +1,61 @@
+import { NextResponse } from "next/server";
+import { spawn } from "child_process";
+import { join } from "path";
+
+export async function GET() {
+  try {
+    console.log("Executing Python stats function...");
+
+    return new Promise((resolve) => {
+      const pythonProcess = spawn("python", [
+        join(process.cwd(), "api", "python", "stats.py"),
+      ]);
+
+      let dataString = "";
+      let errorString = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+        dataString += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        errorString += data.toString();
+        console.error("Python error:", data.toString());
+      });
+
+      pythonProcess.on("close", (code) => {
+        console.log("Python process exited with code:", code);
+
+        if (code !== 0) {
+          console.error("Error output:", errorString);
+          resolve(
+            NextResponse.json(
+              { error: "Failed to fetch stats from Python script" },
+              { status: 500 }
+            )
+          );
+          return;
+        }
+
+        try {
+          const data = JSON.parse(dataString);
+          resolve(NextResponse.json(data));
+        } catch (error) {
+          console.error("Error parsing Python output:", error);
+          resolve(
+            NextResponse.json(
+              { error: "Failed to parse stats data" },
+              { status: 500 }
+            )
+          );
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Error in API route:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch stats. Please try again later." },
+      { status: 500 }
+    );
+  }
+}
