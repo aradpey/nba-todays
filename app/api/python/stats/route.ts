@@ -6,8 +6,9 @@ export async function GET(): Promise<Response> {
   try {
     console.log("Executing Python stats function...");
 
-    return await new Promise<Response>((resolve) => {
-      const pythonProcess = spawn("python", [
+    return await new Promise<Response>((resolve, reject) => {
+      const pythonPath = process.env.VERCEL ? "python3" : "python";
+      const pythonProcess = spawn(pythonPath, [
         join(process.cwd(), "api", "python", "stats.py"),
       ]);
 
@@ -21,6 +22,16 @@ export async function GET(): Promise<Response> {
       pythonProcess.stderr.on("data", (data) => {
         errorString += data.toString();
         console.error("Python error:", data.toString());
+      });
+
+      pythonProcess.on("error", (error) => {
+        console.error("Failed to start Python process:", error);
+        resolve(
+          NextResponse.json(
+            { error: "Failed to start Python process" },
+            { status: 500 }
+          )
+        );
       });
 
       pythonProcess.on("close", (code) => {
