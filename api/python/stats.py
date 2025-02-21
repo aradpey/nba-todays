@@ -2,8 +2,8 @@ from nba_api.stats.endpoints import LeagueGameFinder
 from nba_api.live.nba.endpoints import scoreboard, boxscore
 import pandas as pd
 import numpy as np
-from http.server import BaseHTTPRequestHandler
-from http import HTTPStatus
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import sys
 import traceback
@@ -11,13 +11,22 @@ import logging
 from datetime import datetime
 import time
 
+app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,  # Required for wildcard origins
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Configure logging with more details
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stderr)
-    ],  # Send logs to stderr instead of stdout
+    handlers=[logging.StreamHandler(sys.stderr)],
 )
 logger = logging.getLogger(__name__)
 
@@ -363,5 +372,9 @@ if __name__ == "__main__":
         print(json.dumps(result), file=sys.stdout)
         sys.stdout.flush()
     except Exception as e:
-        print(json.dumps({"error": str(e)}), file=sys.stdout)
+        log_error("Error in main function", e)
+        print(
+            json.dumps({"error": str(e), "traceback": traceback.format_exc()}),
+            file=sys.stdout,
+        )
         sys.stdout.flush()
