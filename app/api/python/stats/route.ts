@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { spawn } from "child_process";
 import { join } from "path";
 
-export async function GET() {
+export async function GET(): Promise<Response> {
   try {
     console.log("Executing Python stats function...");
 
-    return new Promise((resolve) => {
+    return await new Promise<Response>((resolve) => {
       const pythonProcess = spawn("python", [
         join(process.cwd(), "api", "python", "stats.py"),
       ]);
