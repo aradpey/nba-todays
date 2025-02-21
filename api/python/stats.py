@@ -1,11 +1,3 @@
-import sys
-from pathlib import Path
-
-# Add vendor directory to module search path
-PARENT_DIR = Path(__file__).parent.absolute()
-VENDOR_DIR = PARENT_DIR / "vendor"
-sys.path.append(str(VENDOR_DIR))
-
 from nba_api.stats.endpoints import LeagueGameFinder
 from nba_api.live.nba.endpoints import scoreboard, boxscore
 import pandas as pd
@@ -13,6 +5,7 @@ import numpy as np
 from http.server import BaseHTTPRequestHandler
 from http import HTTPStatus
 import json
+import sys
 import traceback
 import logging
 from datetime import datetime
